@@ -1,32 +1,78 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <ng-container *ngFor="let field of formConfig">
-    <div *ngIf="field.type !== 'group'">
-      <label>{{ field.label }}</label>
-      <input *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
-             [type]="field.type" [formControlName]="field.name" [placeholder]="field.placeholder">
-      <select *ngIf="field.type === 'select'" [formControlName]="field.name">
-        <option *ngFor="let opt of field.options" [value]="opt.key">{{ opt.value }}</option>
-      </select>
-      <input *ngIf="field.type === 'checkbox'" type="checkbox" [formControlName]="field.name">
-    </div>
+<div class="container">
+  <mat-card class="form-card">
+    <mat-card-title class="title">Dynamic Form</mat-card-title>
 
-    <div *ngIf="field.type === 'group'" formGroupName="{{ field.name }}">
-      <h4>{{ field.label }}</h4>
-      <ng-container *ngFor="let child of field.children">
-        <label>{{ child.label }}</label>
-        <input [type]="child.type" [formControlName]="child.name" [placeholder]="child.placeholder">
-      </ng-container>
-    </div>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-    <div *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
-      <small *ngIf="form.get(field.name)?.errors?.['required']">This field is required.</small>
-      <small *ngIf="form.get(field.name)?.errors?.['pattern']">Invalid format.</small>
-      <small *ngIf="form.get(field.name)?.errors?.['minlength']">Too short.</small>
-    </div>
-  </ng-container>
+        <ng-container *ngFor="let field of formConfig">
+          <div class="form-group" *ngIf="field.type !== 'group'">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ field.label }}</mat-label>
 
-  <button type="submit" [disabled]="form.invalid">Submit</button>
-</form>
+              <!-- Text, Email, Password Fields -->
+              <input matInput
+                     *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+                     [type]="field.type"
+                     [formControlName]="field.name"
+                     [placeholder]="field.placeholder ?? ''">
 
-<pre>{{ form.value | json }}</pre>
+              <!-- Gender Select Dropdown -->
+              <mat-select *ngIf="field.type === 'select'" [formControlName]="field.name">
+                <mat-option *ngIf="field.name === 'gender'" [value]="'male'">Male</mat-option>
+                <mat-option *ngIf="field.name === 'gender'" [value]="'female'">Female</mat-option>
+                <ng-container *ngIf="field.name !== 'gender'">
+                  <mat-option *ngFor="let opt of field.options" [value]="opt.key">
+                    {{ opt.value }}
+                  </mat-option>
+                </ng-container>
+
+              </mat-select>
+
+              <!-- Error Messages -->
+              <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                {{ getErrorMessage(field.name) }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Checkbox -->
+            <mat-checkbox *ngIf="field.type === 'checkbox'" [formControlName]="field.name">
+              {{ field.label }}
+            </mat-checkbox>
+          </div>
+
+          <!-- Nested Group (e.g., Hobbies) -->
+          <div *ngIf="field.type === 'group'" formGroupName="{{ field.name }}">
+            <h4>{{ field.label }}</h4>
+            <ng-container *ngFor="let child of field.children">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>{{ child.label }}</mat-label>
+                <input matInput [type]="child.type" [formControlName]="child.name" [placeholder]="child.placeholder ?? ''">
+              </mat-form-field>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <!-- Submit Button (Centered) -->
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+            Submit
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Live Form Data Preview -->
+  <mat-card class="preview-card">
+    <mat-card-title class="title">Form Data Preview</mat-card-title>
+    <mat-card-content>
+      <pre *ngIf="form.value && !isEmpty(form.value)">{{ form.value | json }}</pre>
+      <p *ngIf="isEmpty(form.value)">No data entered.</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
 

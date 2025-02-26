@@ -1,14 +1,36 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule  } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
 import { FormField } from '../../models/form-field.model';
 import { FormService } from '../../services/form.service';
+import { CommonModule } from '@angular/common';
+import { NgIf, NgFor } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+
+
 
 
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    NgIf,
+    NgFor,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatButtonModule
+
+
+  ],
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss']
 })
@@ -28,6 +50,20 @@ export class DynamicFormComponent implements OnInit {
 
     this.formConfig.forEach(field => this.addField(field, this.form));
   }
+  getErrorMessage(field: string): string {
+    const control = this.form.get(field);
+    if (!control) return '';
+
+    if (control.hasError('required')) return 'This field is required';
+    if (control.hasError('email')) return 'Enter a valid email';
+    if (control.hasError('minlength')) return 'Too short';
+
+    return 'Invalid input';
+  }
+  isEmpty(obj: any): boolean {
+    return obj && Object.keys(obj).length === 0;
+  }
+
 
   addField(field: FormField, group: FormGroup) {
     if (field.type === 'group' && field.children) {
