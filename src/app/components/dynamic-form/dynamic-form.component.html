@@ -1,38 +1,63 @@
-<h2>Dynamic Form</h2>
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-  <ng-container *ngFor="let field of formConfig">
-    <div *ngIf="field.type !== 'group'" class="form-field">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>{{ field.label }}</mat-label>
-        <input matInput *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
-               [type]="field.type" [formControlName]="field.name" [placeholder]="field.placeholder??'Please select one!'">
-        <select *ngIf="field.type === 'select'" [formControlName]="field.name">
-                <option *ngFor="let opt of field.options" [value]="opt.key">{{ opt.value }}</option>
-        </select>
-        <mat-checkbox *ngIf="field.type === 'checkbox'" [formControlName]="field.name">{{ field.label }}</mat-checkbox>
-      </mat-form-field>
+  <h2>Dynamic Form</h2>
 
-      <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+  <ng-container *ngFor="let field of formConfig">
+    <div *ngIf="field.type !== 'group' && field.type !== 'array'" class="form-field">
+      <label class="form-label">{{ field.label }}</label>
+
+      <input *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'" [type]="field.type"
+        [formControlName]="field.name" [placeholder]="field.placeholder" class="form-input">
+
+      <select *ngIf="field.type === 'select'" [formControlName]="field.name" class="form-select">
+        <option *ngFor="let opt of field.options" [value]="opt.key">{{ opt.value }}</option>
+      </select>
+
+      <label *ngIf="field.type === 'checkbox'" class="checkbox-label">
+        <input type="checkbox" [formControlName]="field.name" class="form-checkbox">
+        {{ field.label }}
+      </label>
+
+      <div class="error-message" *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
         <small *ngIf="form.get(field.name)?.errors?.['required']">This field is required.</small>
         <small *ngIf="form.get(field.name)?.errors?.['pattern']">Invalid format.</small>
         <small *ngIf="form.get(field.name)?.errors?.['minlength']">Too short.</small>
-      </mat-error>
+      </div>
     </div>
 
-    <div *ngIf="field.type === 'group'" formGroupName="{{ field.name }}" class="group-container">
-      <h4>{{ field.label }}</h4>
+    <div *ngIf="field.type === 'group'" formGroupName="{{ field.name }}" class="group-container" style="width: 100%;">
+      <!-- Address label aligned left -->
+      <label class="form-label" style="text-align: left; display: block; margin-bottom: 6px;">
+        {{ field.label + ':' }}
+      </label>
       <ng-container *ngFor="let child of field.children">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>{{ child.label }}</mat-label>
-          <input matInput [type]="child.type" [formControlName]="child.name" [placeholder]="child.placeholder??''">
-        </mat-form-field>
+        <div style="text-align: left; width: 100%;">
+          <label class="form-label">{{ child.label }}</label>
+        </div>
+        <input [type]="child.type" [formControlName]="child.name" [placeholder]="child.placeholder" class="form-input">
       </ng-container>
     </div>
+
+
+<!-- Repeatable Fields (FormArray) -->
+<div *ngIf="field.type === 'array'" class="form-field array-container">
+  <div class="array-header">
+    <h4 class="form-label">{{ field.label }}</h4>
+    <button type="button" (click)="addArrayItem(field.name)" class="add-button">+ Add</button>
+  </div>
+
+  <div formArrayName="{{ field.name }}">
+    <div *ngFor="let item of getFormArray(field.name).controls; let i = index" class="array-item">
+      <input [formControlName]="i" placeholder="Enter {{ field.label }}" class="form-input">
+      <button type="button" (click)="removeArrayItem(field.name, i)" class="remove-button">✖ Remove</button>
+    </div>
+  </div>
+</div>
+
+
   </ng-container>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
+  <button type="submit" [disabled]="form.invalid" class="submit-button">Submit</button>
+
+  <h3>Form Data Preview</h3>
+  <pre class="form-preview">{{ form.value | json }}</pre>
 </form>
-
-<h3>Form Data Preview</h3>
-<pre>{{ form.value | json }}</pre>
-

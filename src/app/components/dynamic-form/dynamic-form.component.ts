@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule ,FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule ,FormControl, FormArray} from '@angular/forms';
 import { FormField } from '../../models/form-field.model';
 import { FormService } from '../../services/form.service';
 import { CommonModule } from '@angular/common';
@@ -17,16 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [
     CommonModule,
-    NgIf,
-    NgFor,
     ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatButtonModule
-
 
   ],
   templateUrl: './dynamic-form.component.html',
@@ -55,7 +46,9 @@ export class DynamicFormComponent implements OnInit {
         const nestedGroup = this.fb.group({});
         field.children.forEach(child => this.addField(child, nestedGroup));
         this.form.addControl(field.name, nestedGroup);
-      } else {
+      } else if (field.type === 'array') {
+        this.form.addControl(field.name, new FormArray([]));
+      }  else {
         this.form.addControl(field.name, new FormControl('', this.getValidators(field.validations)));
       }
     });
@@ -66,6 +59,8 @@ export class DynamicFormComponent implements OnInit {
       const nestedGroup = this.fb.group({});
       field.children.forEach(child => this.addField(child, nestedGroup));
       group.addControl(field.name, nestedGroup);
+    } else if (field.type === 'array') {
+      group.addControl(field.name, this.fb.array([])); // Initialize as FormArray
     } else {
       const control = this.fb.control(
         field.value || '',  // Default value
@@ -74,7 +69,22 @@ export class DynamicFormComponent implements OnInit {
       group.addControl(field.name, control);
     }
   }
+ // Get FormArray for repeatable fields
+ getFormArray(fieldName: string): FormArray {
+  return this.form.get(fieldName) as FormArray;
+}
 
+addArrayItem(fieldName: string) {
+  const formArray = this.getFormArray(fieldName);
+  formArray.push(new FormControl('')); // Adding a new empty input field
+}
+
+removeArrayItem(fieldName: string, index: number) {
+  const formArray = this.getFormArray(fieldName);
+  if (formArray.length > 0) {
+    formArray.removeAt(index);
+  }
+}
 
   getValidators(validations?: any) {
     const validatorList = [];
