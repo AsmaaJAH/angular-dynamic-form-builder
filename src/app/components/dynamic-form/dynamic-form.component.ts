@@ -12,8 +12,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 
 
-
-
 @Component({
   selector: 'app-dynamic-form',
   standalone: true,
