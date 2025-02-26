@@ -1,0 +1,32 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <ng-container *ngFor="let field of formConfig">
+    <div *ngIf="field.type !== 'group'">
+      <label>{{ field.label }}</label>
+      <input *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password'"
+             [type]="field.type" [formControlName]="field.name" [placeholder]="field.placeholder">
+      <select *ngIf="field.type === 'select'" [formControlName]="field.name">
+        <option *ngFor="let opt of field.options" [value]="opt.key">{{ opt.value }}</option>
+      </select>
+      <input *ngIf="field.type === 'checkbox'" type="checkbox" [formControlName]="field.name">
+    </div>
+
+    <div *ngIf="field.type === 'group'" formGroupName="{{ field.name }}">
+      <h4>{{ field.label }}</h4>
+      <ng-container *ngFor="let child of field.children">
+        <label>{{ child.label }}</label>
+        <input [type]="child.type" [formControlName]="child.name" [placeholder]="child.placeholder">
+      </ng-container>
+    </div>
+
+    <div *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+      <small *ngIf="form.get(field.name)?.errors?.['required']">This field is required.</small>
+      <small *ngIf="form.get(field.name)?.errors?.['pattern']">Invalid format.</small>
+      <small *ngIf="form.get(field.name)?.errors?.['minlength']">Too short.</small>
+    </div>
+  </ng-container>
+
+  <button type="submit" [disabled]="form.invalid">Submit</button>
+</form>
+
+<pre>{{ form.value | json }}</pre>
+
