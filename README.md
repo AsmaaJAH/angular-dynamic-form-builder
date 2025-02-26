@@ -1,3 +1,24 @@
+
+
+
+https://github.com/user-attachments/assets/66ef8b75-7ff3-4ef7-b697-b1061429fa52
+
+Challenge: Dynamic JSON-Driven Form Builder
+Your challenge is to build an Angular component that dynamically generates a form based on a JSON configuration. The form should:
+✔️ Support various field types (text, email, password, select, checkbox, etc.).
+✔️ Apply dynamic validation rules from the JSON schema.
+✔️ Handle nested form groups and repeatable fields (e.g., hobbies list).
+✔️ Provide real-time validation feedback to the user.
+✔️ Include a live preview panel displaying form data as the user fills it out.
+✔️ Submit the form and display a confirmation message.
+
+⚡️ Bonus Features (Optional, Extra Points)
+🚀 Async Validation: Implement an API-based validation for email uniqueness.
+🚀 State Persistence: Store form progress in local storage.
+🚀 Custom Directives/Pipes: Implement input formatting for specific fields.
+🚀 Unit Testing: Write test cases for key form functionalities.
+
+
 # DynamicFormBuilder
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
