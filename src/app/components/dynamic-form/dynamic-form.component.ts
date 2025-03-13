@@ -3,13 +3,13 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule ,FormControl, F
 import { FormField } from '../../models/form-field.model';
 import { FormService } from '../../services/form.service';
 import { CommonModule } from '@angular/common';
-import { NgIf, NgFor } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
+// import { NgIf, NgFor } from '@angular/common';
+// import { MatCardModule } from '@angular/material/card';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatInputModule } from '@angular/material/input';
+// import { MatSelectModule } from '@angular/material/select';
+// import { MatCheckboxModule } from '@angular/material/checkbox';
+// import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
@@ -104,8 +104,8 @@ removeArrayItem(fieldName: string, index: number) {
 
     return 'Invalid input';
   }
-  isEmpty(obj: any): boolean {
-    return obj && Object.keys(obj).length === 0;
+  isEmpty(obj: any): boolean { //فاضي من جوه
+    return obj && Object.keys(obj).length === 0; // "If obj exists (is not null or undefined or any other falsy value), then check if the number of keys in obj is equal to zero. If it is, return true (meaning the object is empty); otherwise, return false (meaning the object is not empty).
   }
   onSubmit() {
     if (this.form.valid) {

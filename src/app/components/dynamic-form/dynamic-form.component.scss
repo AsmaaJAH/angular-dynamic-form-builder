@@ -163,7 +163,7 @@ h2 {
 }
 
 .form-input {
-  flex-grow: 1;
+  flex-grow: 1; //The element will grow by a factor of 1. It will fill up the remaining space if no other flexbox item has a flex-grow value.
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

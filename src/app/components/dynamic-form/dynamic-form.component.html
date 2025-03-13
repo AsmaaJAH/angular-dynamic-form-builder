@@ -1,3 +1,4 @@
+<!-- formGroup from this html file  -->
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
   <h2>Dynamic Form</h2>
 
@@ -38,20 +39,20 @@
     </div>
 
 
-<!-- Repeatable Fields (FormArray) -->
-<div *ngIf="field.type === 'array'" class="form-field array-container">
-  <div class="array-header">
-    <h4 class="form-label">{{ field.label }}</h4>
-    <button type="button" (click)="addArrayItem(field.name)" class="add-button">+ Add</button>
-  </div>
+    <!-- Repeatable Fields (FormArray) -->
+    <div *ngIf="field.type === 'array'" class="form-field array-container">
+      <div class="array-header">
+        <h4 class="form-label">{{ field.label }}</h4>
+        <button type="button" (click)="addArrayItem(field.name)" class="add-button">+ Add</button>
+      </div>
 
-  <div formArrayName="{{ field.name }}">
-    <div *ngFor="let item of getFormArray(field.name).controls; let i = index" class="array-item">
-      <input [formControlName]="i" placeholder="Enter {{ field.label }}" class="form-input">
-      <button type="button" (click)="removeArrayItem(field.name, i)" class="remove-button">✖ Remove</button>
+      <div formArrayName="{{ field.name }}">
+        <div *ngFor="let item of getFormArray(field.name).controls; let i = index" class="array-item">
+          <input [formControlName]="i" placeholder="Enter {{ field.label }}" class="form-input">
+          <button type="button" (click)="removeArrayItem(field.name, i)" class="remove-button">✖ Remove</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
 
   </ng-container>
@@ -60,4 +61,5 @@
 
   <h3>Form Data Preview</h3>
   <pre class="form-preview">{{ form.value | json }}</pre>
+<!-- "Take the current data from the form (form.value), convert it into a nicely formatted JSON string using the json pipe, and then display that JSON string inside a <pre> tag with the form-preview class so it looks like code and is easy to read." -->
 </form>
